@@ -40,9 +40,8 @@ function GenerateDialgueBlock(node, nodelist, contextDepth) {
         let lastNode = path[path.length-1];
 
         if (contextDepth >= 3) {
-            let lastNode = path[path.length-1];
             path.push(nodelist.find(node => node.id === lastNode.outbound[0].id));
-            path.forEach((node, index) =>{
+            path.forEach((node, index) => {
                 returnValue.append(printNode(node, lineIndex, index === path.length - 2));
             });
         } else {
