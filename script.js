@@ -37,16 +37,16 @@ function GenerateDialgueBlock(node, nodelist, contextDepth) {
     lineIndex++;
 
     for (let path of parentNodes) {
-        let lastNode = path[path.length-1];
-
         if (contextDepth >= 3) {
-            path.push(nodelist.find(node => node.id === lastNode.outbound[0].id));
-            path.forEach((node, index) => {
-                returnValue.append(printNode(node, lineIndex, index === path.length - 2));
+            let lastNode = path[path.length-1];
+            let nextNode = nodelist.find(node => node.id === lastNode.outbound[0].id);
+            path.push(nextNode);
+            path.forEach((pathNode, index) => {
+                returnValue.append(printNode(pathNode, lineIndex, index === path.length - 2));
             });
         } else {
-            path.forEach((node, index) =>{
-                returnValue.append(printNode(node, lineIndex, index === path.length - 1));
+            path.forEach((pathNode, index) =>{
+                returnValue.append(printNode(pathNode, lineIndex, index === path.length - 1));
             });
         }
     }
@@ -89,7 +89,7 @@ function getParentNodes(node, nodelist) {
 }
 
 function printNode(node, lineIndex, primary = false) {
-    let returnValue;
+    let returnValue = "";
     if (node.type === "dialogue.Text") {
         let text = node.text;
 
@@ -98,10 +98,15 @@ function printNode(node, lineIndex, primary = false) {
         // Filter out emotion markup. Example: [Aaaarghh!|s]
         text = text.replace(/\[([^\[\]\|]*)(\|.*?)?\]/g, '$1');
 
-        if (primary) {
-            returnValue = `<tr><td style="width:100px">${lineIndex}</td ><td><span class="actor-name">${node.actor}:</span></td><td>${text}</td></tr>`;
-        } else {
-            returnValue = `<tr class="context"><td></td><td><span class="actor-name">${node.actor}:</span></td><td>${text}</td></tr>`;
+        let textSegments = text.split("|");
+        let firstNumber = true;
+        for (let textSegment of textSegments) {
+            if (primary) {
+                returnValue += `<tr><td style="width:100px">${firstNumber ? lineIndex : ""}</td ><td><span class="actor-name">${node.actor}:</span></td><td>${textSegment}</td></tr>`;
+            } else {
+                returnValue += `<tr class="context"><td></td><td><span class="actor-name">${node.actor}:</span></td><td>${textSegment}</td></tr>`;
+            }
+            firstNumber = false;
         }
     }
 
