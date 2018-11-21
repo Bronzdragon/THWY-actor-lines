@@ -32,11 +32,14 @@ function UpdateDialogueBox(){
 
 function GenerateDialgueBlock(node, nodelist, contextDepth) {
     let returnValue = $("<table/>");
+
     let parentNodes = getPreviousNodes(node, nodelist, contextDepth);
-    console.log("Parent nodes: ", getPreviousNodes(node, nodelist, contextDepth));
+    //console.log("Parent nodes: ", parentNodes);
     lineIndex++;
 
+    console.log("Generating table");
     for (let path of parentNodes) {
+        console.log("\t Looping");
         if (contextDepth >= 3) {
             let lastNode = path[path.length-1];
             let nextNode = nodelist.find(node => node.id === lastNode.outbound[0].id);
@@ -51,11 +54,8 @@ function GenerateDialgueBlock(node, nodelist, contextDepth) {
         }
     }
     returnValue = $("</p>").append(returnValue);
-    if (lineIndex%2 != true) {
-        returnValue.addClass("alternate even");
-    } else {
-        returnValue.addClass("alternate odd");
-    }
+
+    returnValue.addClass("alternate " + (lineIndex%2 ? "odd" : "even"));
     return returnValue;
 }
 
@@ -92,6 +92,9 @@ function printNode(node, lineIndex, primary = false) {
     let returnValue = "";
     if (node.type === "dialogue.Text") {
         let text = node.text;
+        if (!$("#clean-ids").prop('checked')) {
+          lineIndex = node.id;
+        }
 
         // Filter out lookup markup. Example: {the school|RevolverAcademy}
         text = text.replace(/\{([^\{\}\|]*)(\|.*?)?\}/g, '$1');
