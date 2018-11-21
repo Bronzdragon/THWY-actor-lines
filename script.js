@@ -16,6 +16,7 @@ $(document).ready(() => {
     // When we pick a character from the dropdown.
     $("select#characters").change(UpdateDialogueBox);
     $("select#context-depth").change(UpdateDialogueBox);
+    $("input#director-mode").change(UpdateDialogueBox);
 });
 
 function UpdateDialogueBox(){
@@ -92,7 +93,7 @@ function printNode(node, lineIndex, primary = false) {
     let returnValue = "";
     if (node.type === "dialogue.Text") {
         let text = node.text;
-        if (!$("#clean-ids").prop('checked')) {
+        if ($("#director-mode").prop('checked')) {
           lineIndex = node.id;
         }
 

@@ -19,3 +19,7 @@ span.actor-name{
 .alternate.odd {
     background-color: #d3e5ed;
 }
+
+.subtle {
+  color: rgba(0, 0, 0, 0.5);
+}
